@@ -64,9 +64,12 @@ export function PropertiesPanel({ block, onChange, onDuplicate }: PropertiesPane
               onChange={(v) => update({ title: v })}
             />
             <CatalogItemsEditor
-              items={block.items}
-              onChange={(items) => update({ items })}
-            />
+  items={(block.items || []).map((item: any) => ({
+    ...item,
+    price: typeof item.price === 'string' ? parseFloat(item.price) || 0 : item.price
+  }))}
+  onChange={(items) => update({ items })}
+/>
           </>
         )}
         {block.type === 'contacts' && (
