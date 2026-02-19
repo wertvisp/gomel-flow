@@ -19,9 +19,10 @@ export function PropertiesPanel({ block, onChange, onDuplicate }: PropertiesPane
       </aside>
     );
   }
-const update = (updates: Partial<Block>) => {
-  onChange({ ...block, ...updates } as Block);
-};
+
+  const update = (updates: Partial<Block>) => {
+    onChange({ ...block, ...updates } as Block);
+  };
 
   return (
     <aside className="w-72 flex-shrink-0 overflow-auto border-l border-slate-200 bg-slate-50 p-4">
@@ -205,7 +206,13 @@ function LabelInput({
   );
 }
 
-function CatalogItemsEditor({ items, onChange }: { items: CatalogItem[]; onChange: (items: CatalogItem[]) => void }) {
+function CatalogItemsEditor({ 
+  items, 
+  onChange 
+}: { 
+  items: CatalogItem[]; 
+  onChange: (items: CatalogItem[]) => void 
+}) {
   const addItem = () => {
     onChange([...items, { id: crypto.randomUUID(), name: '', price: 0 }]);
   };
@@ -230,6 +237,7 @@ function CatalogItemsEditor({ items, onChange }: { items: CatalogItem[]; onChang
         <label className="text-xs font-bold text-slate-600">Товары</label>
         <button
           onClick={addItem}
+          type="button"
           className="px-3 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600"
         >
           + Добавить
@@ -237,7 +245,7 @@ function CatalogItemsEditor({ items, onChange }: { items: CatalogItem[]; onChang
       </div>
       
       {items.map((item, index) => (
-        <div key={item.id} className="p-3 bg-slate-50 rounded-lg space-y-2">
+        <div key={item.id} className="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
           <div className="flex items-start gap-2">
             <div className="flex-1 space-y-2">
               <input
@@ -245,19 +253,21 @@ function CatalogItemsEditor({ items, onChange }: { items: CatalogItem[]; onChang
                 placeholder="Название товара"
                 value={item.name}
                 onChange={(e) => updateItem(index, 'name', e.target.value)}
-                className="w-full px-3 py-2 text-sm border rounded"
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-emerald-500 focus:outline-none"
               />
               <input
                 type="number"
                 placeholder="Цена"
                 value={item.price}
                 onChange={(e) => updateItem(index, 'price', e.target.value)}
-                className="w-full px-3 py-2 text-sm border rounded"
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-emerald-500 focus:outline-none"
               />
             </div>
             <button
               onClick={() => removeItem(index)}
+              type="button"
               className="p-2 text-red-500 hover:bg-red-50 rounded"
+              title="Удалить товар"
             >
               ×
             </button>
@@ -270,72 +280,6 @@ function CatalogItemsEditor({ items, onChange }: { items: CatalogItem[]; onChang
           Нажмите "+ Добавить" чтобы создать товар
         </p>
       )}
-    </div>
-  );
-}
-
-  const addItem = () => {
-    onChange([
-      ...items,
-      {
-        id: crypto.randomUUID(),
-        name: 'Новый товар',
-        price: 0,
-      },
-    ]);
-  };
-
-  const removeItem = (id: string) => {
-    onChange(items.filter((i) => i.id !== id));
-  };
-
-  return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <label className="block text-xs font-medium text-slate-600">Товары</label>
-        <button
-          type="button"
-          onClick={addItem}
-          className="rounded bg-emerald-500 px-2 py-1 text-xs font-medium text-white hover:bg-emerald-600"
-        >
-          + Добавить
-        </button>
-      </div>
-      <div className="space-y-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="flex gap-2 rounded border border-slate-200 bg-white p-2"
-          >
-            <div className="flex-1 space-y-1">
-              <input
-                type="text"
-                value={item.name}
-                onChange={(e) => updateItem(item.id, { name: e.target.value })}
-                placeholder="Название"
-                className="w-full rounded border border-slate-200 px-2 py-1 text-sm"
-              />
-              <input
-                type="number"
-                value={item.price}
-                onChange={(e) =>
-                  updateItem(item.id, { price: Number(e.target.value) || 0 })
-                }
-                placeholder="Цена"
-                className="w-full rounded border border-slate-200 px-2 py-1 text-sm"
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => removeItem(item.id)}
-              className="flex-shrink-0 self-center rounded bg-red-100 p-1.5 text-red-600 hover:bg-red-200"
-              title="Удалить"
-            >
-              🗑️
-            </button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
