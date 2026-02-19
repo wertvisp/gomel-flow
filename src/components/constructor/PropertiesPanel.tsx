@@ -205,18 +205,74 @@ function LabelInput({
   );
 }
 
-function CatalogItemsEditor({
-  items,
-  onChange,
-}: {
-  items: CatalogItem[];
-  onChange: (items: CatalogItem[]) => void;
-}) {
-  const updateItem = (id: string, updates: Partial<CatalogItem>) => {
-    onChange(
-      items.map((i) => (i.id === id ? { ...i, ...updates } : i))
-    );
+function CatalogItemsEditor({ items, onChange }: { items: CatalogItem[]; onChange: (items: CatalogItem[]) => void }) {
+  const addItem = () => {
+    onChange([...items, { id: crypto.randomUUID(), name: '', price: 0 }]);
   };
+
+  const updateItem = (index: number, field: keyof CatalogItem, value: string | number) => {
+    const updated = [...items];
+    if (field === 'price') {
+      updated[index][field] = typeof value === 'string' ? parseFloat(value) || 0 : value;
+    } else {
+      updated[index][field] = value as any;
+    }
+    onChange(updated);
+  };
+
+  const removeItem = (index: number) => {
+    onChange(items.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="text-xs font-bold text-slate-600">Товары</label>
+        <button
+          onClick={addItem}
+          className="px-3 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600"
+        >
+          + Добавить
+        </button>
+      </div>
+      
+      {items.map((item, index) => (
+        <div key={item.id} className="p-3 bg-slate-50 rounded-lg space-y-2">
+          <div className="flex items-start gap-2">
+            <div className="flex-1 space-y-2">
+              <input
+                type="text"
+                placeholder="Название товара"
+                value={item.name}
+                onChange={(e) => updateItem(index, 'name', e.target.value)}
+                className="w-full px-3 py-2 text-sm border rounded"
+              />
+              <input
+                type="number"
+                placeholder="Цена"
+                value={item.price}
+                onChange={(e) => updateItem(index, 'price', e.target.value)}
+                className="w-full px-3 py-2 text-sm border rounded"
+              />
+            </div>
+            <button
+              onClick={() => removeItem(index)}
+              className="p-2 text-red-500 hover:bg-red-50 rounded"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      ))}
+      
+      {items.length === 0 && (
+        <p className="text-xs text-slate-400 text-center py-4">
+          Нажмите "+ Добавить" чтобы создать товар
+        </p>
+      )}
+    </div>
+  );
+}
 
   const addItem = () => {
     onChange([
