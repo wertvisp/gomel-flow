@@ -1,7 +1,7 @@
 'use client';
 
 import type { Block, CatalogItem } from '@/types/block';
-
+import { normalizeCatalogItems } from '@/lib/migrations'
 interface PropertiesPanelProps {
   block: Block | null;
   onChange: (block: Block) => void;
@@ -64,13 +64,10 @@ export function PropertiesPanel({ block, onChange, onDuplicate }: PropertiesPane
               onChange={(v) => update({ title: v })}
             />
             <CatalogItemsEditor
-  items={(block.items || []).map((item: any) => ({
-    ...item,
-    price: typeof item.price === 'string' ? parseFloat(item.price) || 0 : item.price
-  }))}
+  items={normalizeCatalogItems(block.items || [])}
   onChange={(items) => update({ items })}
 />
-          </>
+</>
         )}
         {block.type === 'contacts' && (
           <>
